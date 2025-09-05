@@ -1,13 +1,21 @@
 #!/usr/bin/env node
 
-const { Command } = require("commander");
-const { encrypt, decrypt } = require("text-encrypter");
-const fs = require("fs");
-const { Document, Paragraph, TextRun, Packer } = require("docx");
+import { Command } from "commander";
+import { encrypt, decrypt } from "text-encrypter";
+import * as fs from "fs";
+import { Document, Paragraph, TextRun, Packer } from "docx";
 
 const program = new Command();
 
-async function createDocxFile(text, outputPath) {
+interface CommandOptions {
+  steps: string;
+  file?: string;
+  output?: string;
+  decrypt?: boolean;
+  docx?: boolean;
+}
+
+async function createDocxFile(text: string, outputPath: string): Promise<void> {
   const doc = new Document({
     sections: [
       {
@@ -46,7 +54,7 @@ program
   .option("-o, --output <path>", "Optional path to output file")
   .option("-d, --decrypt", "Decrypt the input instead of encrypting it")
   .option("--docx", "Generate output as DOCX file (requires -o option)")
-  .action(async (input, options) => {
+  .action(async (input: string | undefined, options: CommandOptions) => {
     const steps = parseInt(options.steps, 10);
 
     if (isNaN(steps)) {
@@ -70,23 +78,23 @@ program
       process.exit(1);
     }
 
-    let inputText;
+    let inputText: string;
 
     // Check if file option is provided
     if (options.file) {
       try {
         inputText = fs.readFileSync(options.file, "utf8");
       } catch (error) {
-        console.error(`Error reading file ${options.file}: ${error.message}`);
+        console.error(`Error reading file ${options.file}: ${(error as Error).message}`);
         process.exit(1);
       }
     } else {
       // Treat input as string buffer
-      inputText = input;
+      inputText = input!;
     }
 
     // Process the text using Caesar cipher (encrypt or decrypt)
-    let processedText;
+    let processedText: string;
     if (options.decrypt) {
       processedText = decrypt(inputText, steps, true);
     } else {
@@ -106,7 +114,7 @@ program
         console.log(`${operation} ${format} written to ${options.output}`);
       } catch (error) {
         console.error(
-          `Error writing to file ${options.output}: ${error.message}`,
+          `Error writing to file ${options.output}: ${(error as Error).message}`,
         );
         process.exit(1);
       }

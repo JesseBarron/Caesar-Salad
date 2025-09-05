@@ -1,19 +1,40 @@
 {
   "name": "caesar-salad",
   "version": "1.0.0",
-  "description": "A test cli tool that allows you to specify an input and produces a cyphered output",
-  "main": "index.js",
+  "description": "A CLI tool for Caesar cipher encryption/decryption with customizable shift",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "bin": {
-    "caesar-salad": "./bin/main.js"
+    "caesar-salad": "./dist/bin/main.js"
   },
+  "files": [
+    "dist/"
+  ],
   "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "caesar",
+    "cipher",
+    "encryption",
+    "cli",
+    "cryptography"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "commander": "^14.0.0",
     "docx": "^9.5.1",
     "text-encrypter": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.13",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
